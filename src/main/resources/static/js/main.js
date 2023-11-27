@@ -38,7 +38,7 @@ function connect(event) {
 }
 
 function onConnected() {
-  stompClient.subscribe("/topic/public", connect, onMessageReceived);
+  stompClient.subscribe("/topic/public", onMessageReceived);
 
   console.log("User Joining: \n" + JSON.stringify({ sender: username, type: "JOIN" }));
 
@@ -50,7 +50,7 @@ function onConnected() {
   connectingElement.classList.add('hidden');
 }
 
-function onError() {
+function onError(error) {
     connectingElement.textContent = "Could not connect to WebSocket server, please refresh to retry."
     connectingElement.style.color = 'red';
 }
@@ -110,6 +110,16 @@ function sendMessage(event) {
 
     event.preventDefault();
 }
+
+function getAvatarColor(messageSender) {
+  var hash = 0;
+  for (var i = 0; i < messageSender.length; i++) {
+      hash = 31 * hash + messageSender.charCodeAt(i);
+  }
+  var index = Math.abs(hash % colors.length);
+  return colors[index];
+}
+
 
 usernameForm.addEventListener('submit', connect, true);
 messageForm.addEventListener('submit', sendMessage, true);
